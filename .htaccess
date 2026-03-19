@@ -1,1 +1,2 @@
+ErrorDocument 403 /ProjetUnivers/403.php
 ErrorDocument 404 /ProjetUnivers/404.php

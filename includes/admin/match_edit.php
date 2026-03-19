@@ -8,9 +8,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if (($_SESSION['role'] ?? '') !== 'staff') {
-    $erreur_acces = 'Vous n\'avez pas les droits pour accéder à cette section réservée au staff.';
-} else {
-    $erreur_acces = '';
+    header('Location: /ProjetUnivers/403.php');
+    exit;
 }
 
 $erreurs = [];
@@ -24,7 +23,7 @@ $youtube_url = '';
 
 $id_match = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-if ($erreur_acces === '' && $id_match > 0) {
+if ($id_match > 0) {
     $requete = $pdo->prepare(
         'SELECT id, opponent, competition, match_date, home_away, goals_city, goals_opponent, youtube_url
          FROM matchs WHERE id = ?'
@@ -47,7 +46,7 @@ if ($erreur_acces === '' && $id_match > 0) {
     $erreurs['global'] = 'Identifiant de match invalide.';
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $erreur_acces === '' && empty($erreurs['global'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($erreurs['global'])) {
     $adversaire   = trim($_POST['adversaire'] ?? '');
     $competition  = trim($_POST['competition'] ?? '');
     $date_match   = trim($_POST['date_match'] ?? '');
@@ -104,16 +103,7 @@ require_once __DIR__ . '/../../includes/header.php';
 <h1 class="titre-page">Modifier un match</h1>
 <p class="sous-titre-page">Zone réservée au staff du club.</p>
 
-<?php if ($erreur_acces !== ''): ?>
-    <div class="erreur-globale" style="max-width:500px;">
-        <strong>Accès refusé</strong>
-        <p><?php echo htmlspecialchars($erreur_acces, ENT_QUOTES, 'UTF-8'); ?></p>
-        <a href="../../dashboard.php" class="bouton bouton-secondaire" style="margin-top:1rem;">
-            Retour au tableau de bord
-        </a>
-    </div>
-
-<?php elseif (!empty($erreurs['global'])): ?>
+<?php if (!empty($erreurs['global'])): ?>
     <div class="erreur-globale" style="max-width:500px;">
         <?php echo htmlspecialchars($erreurs['global'], ENT_QUOTES, 'UTF-8'); ?>
     </div>

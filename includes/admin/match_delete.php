@@ -9,8 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if (($_SESSION['role'] ?? '') !== 'staff') {
-    http_response_code(403);
-    echo "Accès refusé.";
+    header('Location: /ProjetUnivers/403.php');
     exit;
 }
 

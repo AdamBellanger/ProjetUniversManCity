@@ -2,8 +2,12 @@
 session_start();
 require_once '../../db.php';
 
-if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'staff') {
+if (!isset($_SESSION['user_id'])) {
     header('Location: ../../login.php');
+    exit;
+}
+if (($_SESSION['role'] ?? '') !== 'staff') {
+    header('Location: /ProjetUnivers/403.php');
     exit;
 }
 
